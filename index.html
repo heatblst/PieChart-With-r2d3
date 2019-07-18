@@ -1,0 +1,97 @@
+<html>
+  <head>
+   <script src="https://d3js.org/d3.v4.min.js"></script>
+   <style>
+    body{
+    	text-align:center;
+    }
+    g{
+    	text-anchor:middle;
+    	cursor:pointer;
+    }
+    table{
+    	margin:auto;
+    	font: italic bold 18px Georgia, serif;
+    	margin-top:6%;
+    }
+    ul{
+	   list-style-type: square;
+    }
+    h1{
+    	text-decoration:underline;
+    }
+   </style>
+  </head>
+  <body>
+  <h1>Pie-Chart of Fruits</h1>
+  <table>
+  <tr>
+    <th><ul>
+    <li style="color:blue;">Apple (35)</li><br>
+    <li style="color:orange;">Banana (28)</li><br>
+    <li style="color:green;">Orange (15)</li><br>
+    <li style="color:red;">Grapes (30)</li><br>
+    <li style="color:darkorchid;">Mangoes (47)</li><br>
+    <li style="color:brown;">Strawberries (40)</li>
+   </ul></th>
+    <td><div id="graph"></div></td>
+  </tr>
+  
+</table>
+
+  <div colspan=2>
+  
+   
+  </div>
+  </div>
+   <script >
+     var data = [{'name':"Apple",'value':35},{'name':"Banana",'value':28},{'name':"Orange",'value':15},{'name':"Grapes",'value':30},{'name':"Mangoes",'value':47},{'name':"Strawberries",'value':43}];
+     var width = 500;
+     var height = 500;
+     var radius = Math.min(width,height)/2;
+     var color = d3.scaleOrdinal(d3.schemeCategory10);
+     var svg = d3.select("#graph") 
+       .append('svg')
+       .attr('width', width)
+       .attr('height', height);
+ 
+     var g = svg.append('g')
+         .attr('transform', 'translate('+radius+','+radius+')');
+
+     var pie = d3.pie()
+          .value(function(d) { return d.value; });
+
+     var arc = d3.arc()
+           .innerRadius(0)
+           .outerRadius(radius);
+
+     var path = g.selectAll('path')
+           .data(pie(data))
+           .enter()
+           .append("g")  
+           .append('path')
+           .attr('d', arc)
+           .attr('fill', (d,i) => color(i))
+           .style('stroke', 'white')
+           .on("mouseover", function(d){
+                var g = d3.select("svg")
+                   .append("g")
+                   .attr("class", "txtdata");
+                   g.append("text")
+                   .text(`${d.data.name} (${d.data.value})`);
+                })
+           .on("mousemove", function(d){
+                var pos = d3.mouse(this);
+                var x = pos[0] + width/2;
+                var y = pos[1] + height/2 - 10;
+                var text = d3.select('.txtdata');
+                d3.select('.txtdata')
+                .attr('transform',`translate(${x}, ${y})`);
+            })
+            .on("mouseout", function(d) {   
+                d3.select("svg")
+                .select(".txtdata").remove();
+            })
+  </script>
+ </body>
+</html>
